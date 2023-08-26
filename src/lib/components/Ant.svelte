@@ -9,18 +9,31 @@
         rotation: Rotation;
     }
 
-    export let size = 100;
+    let cell_size = 16;
 
+    let container_height: number = 1;
+    let container_width: number = 1;
 
-    let grid: number[][];
-    $: generate_grid(size);
+    let grid_width: number, grid_height: number;
+    $: grid_height = Math.floor(container_height / cell_size);
+    $: grid_width = Math.floor(container_width / cell_size);
 
     // Ant controls
-    let ant: Ant = {
-        x: Math.floor(size / 2),
-        y: Math.floor(size / 2),
-        rotation: "L",
+    let ant: Ant;
+    let grid: number[][];
+    $: {
+        generate_grid(grid_height, grid_width)
+        reset();
     };
+
+    export function reset() {
+        generate_grid(grid_height, grid_width);
+        ant = {
+            x: Math.floor(grid_width / 2),
+            y: Math.floor(grid_height / 2),
+            rotation: "L",
+        };
+    }
 
     let known_states = 0;
     config.subscribe((config) => {
@@ -35,19 +48,10 @@
         return ant.x === x && ant.y === y;
     }
 
-    function generate_grid(size: number) {
-        grid = new Array(size)
+    function generate_grid(height: number, width: number) {
+        grid = new Array(height)
             .fill(undefined)
-            .map(() => new Array(size).fill(0));
-    }
-
-    export function reset() {
-        generate_grid(size);
-        ant = {
-            x: Math.floor(size / 2),
-            y: Math.floor(size / 2),
-            rotation: "L",
-        };
+            .map(() => new Array(width).fill(0));
     }
 
     export function tick(): boolean {
@@ -114,37 +118,49 @@
     }
 </script>
 
-{#each grid as row, y}
-    <div class="row">
-        {#each row as cell, x}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div
-                class="cell"
-                class:ant={coord_matches(ant, x, y)}
-                style:--background={$config.states[cell]}
-                on:mousedown={() => start_drag(x, y)}
-                on:mouseup={() => end_drag()}
-                on:mouseover={() => drag_toggle(x, y)}
-            />
-        {/each}
-    </div>
-{/each}
+<div
+    class="container"
+    bind:clientHeight={container_height}
+    bind:clientWidth={container_width}
+    style:--cell_size={cell_size + "px"}
+    style:padding-left={(container_width - (cell_size * grid_width)) / 2 + "px"}
+    style:padding-top={(container_height - (cell_size * grid_height)) / 2 + "px"}
+>
+    {#each grid as row, y}
+        <div class="row">
+            {#each row as cell, x}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <div
+                    class="cell"
+                    class:ant={coord_matches(ant, x, y)}
+                    style:--background={$config.states[cell]}
+                    on:mousedown={() => start_drag(x, y)}
+                    on:mouseup={() => end_drag()}
+                    on:mouseover={() => drag_toggle(x, y)}
+                />
+            {/each}
+        </div>
+    {/each}
+</div>
 
 <style>
+    .container {
+        box-sizing: border-box;
+        border: 1px solid black;
+        margin: 1rem;
+
+        height: calc(100% - 2rem);
+    }
+
     .row {
-        --size: 12px;
-
-        margin: 0;
-        padding: 0;
-
-        height: var(--size);
+        height: var(--cell_size);
     }
 
     .cell {
-        height: var(--size);
-        width: var(--size);
+        height: var(--cell_size);
+        width: var(--cell_size);
 
         display: inline-block;
         position: relative;

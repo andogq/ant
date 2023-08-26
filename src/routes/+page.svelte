@@ -46,32 +46,66 @@
     }
 </script>
 
-<h1>Langton's Ant</h1>
+<div class="container">
+    <div class="header">
+        <h1>Langton's Ant</h1>
+        <p>Tick count: <b>{tick_count}</b></p>
 
-<p>Tick count: <b>{tick_count}</b></p>
+        <div class="controller">
+            <ConfigEditor />
 
-<div class="controller">
-    <ConfigEditor />
+            <label>
+                Multiplier
+                <input type="number" bind:value={multiplier} min={1} step={1} />
+            </label>
 
-    <label>
-        Multiplier
-        <input type="number" bind:value={multiplier} min={1} step={1} />
-    </label>
+            <button on:click={toggle_running}>
+                {#if running}
+                    Pause
+                {:else}
+                    Play
+                {/if}
+            </button>
 
-    <button on:click={toggle_running}>
-        {#if running}
-            Pause
-        {:else}
-            Play
-        {/if}
-    </button>
+            <button on:click={tick} disabled={!valid_state && running}
+                >Tick</button
+            >
 
-    <button on:click={tick} disabled={!valid_state && running}>Tick</button>
+            <button on:click={reset}>Reset</button>
+        </div>
+    </div>
 
-    <button on:click={reset}>Reset</button>
+    <div class="ant">
+        <Ant bind:this={ant_controller} />
+    </div>
 </div>
 
-<Ant bind:this={ant_controller} />
-
 <style>
+    :global(*) {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :global(html, body) {
+        height: 100%;
+    }
+
+    .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .ant {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0;
+        overflow: hidden;
+    }
 </style>
