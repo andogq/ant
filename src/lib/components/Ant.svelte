@@ -67,19 +67,19 @@
             grid[ant.y][ant.x] = rule.color;
 
             // Rotate the ant
-            ant.rotation = apply_rotation(ant.rotation, rule.rotate);
+            let next_rotation = apply_rotation(ant.rotation, rule.rotate);
 
             // Move the ant
             let dy = 0;
             let dx = 0;
 
-            if (ant.rotation === "U") {
+            if (next_rotation === "U") {
                 dy -= 1;
-            } else if (ant.rotation === "D") {
+            } else if (next_rotation=== "D") {
                 dy += 1;
-            } else if (ant.rotation === "L") {
+            } else if (next_rotation === "L") {
                 dx -= 1;
-            } else if (ant.rotation === "R") {
+            } else if (next_rotation === "R") {
                 dx += 1;
             }
 
@@ -92,6 +92,7 @@
             } else {
                 ant.x = new_x;
                 ant.y = new_y;
+                ant.rotation = next_rotation;
             }
         } else {
             console.error("No matching rule found for", current_color);
