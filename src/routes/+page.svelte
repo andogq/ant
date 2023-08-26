@@ -1,6 +1,7 @@
 <script lang="ts">
     import Ant from "$lib/components/Ant.svelte";
     import ConfigEditor from "$lib/components/ConfigEditor.svelte";
+    import TimeControl from "$lib/components/TimeControl.svelte";
 
     let ant_controller: Ant;
 
@@ -9,12 +10,8 @@
     let valid_state = true;
     let running = false;
 
-    function toggle_running() {
-        running = !running;
-
-        if (running) {
-            animation_callback();
-        }
+    $: if (running) {
+        animation_callback();
     }
 
     function tick() {
@@ -54,24 +51,14 @@
         <div class="controller">
             <ConfigEditor />
 
-            <label>
-                Multiplier
-                <input type="number" bind:value={multiplier} min={1} step={1} />
-            </label>
+            <TimeControl
+                bind:multiplier
+                bind:running
+                disable_controls={!valid_state}
 
-            <button on:click={toggle_running}>
-                {#if running}
-                    Pause
-                {:else}
-                    Play
-                {/if}
-            </button>
-
-            <button on:click={tick} disabled={!valid_state && running}
-                >Tick</button
-            >
-
-            <button on:click={reset}>Reset</button>
+                on:tick={tick}
+                on:reset={reset}
+            />
         </div>
     </div>
 
@@ -85,6 +72,9 @@
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        
+        --primary: #aaaaee;
     }
 
     :global(html, body) {
