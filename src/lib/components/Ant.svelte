@@ -63,9 +63,6 @@
         let rule = rules.get(current_color) || null;
 
         if (rule) {
-            // Change the current cell
-            grid[ant.y][ant.x] = rule.color;
-
             // Rotate the ant
             let next_rotation = apply_rotation(ant.rotation, rule.rotate);
 
@@ -90,6 +87,9 @@
             if (new_x < 0 || new_y < 0 || new_x >= 100 || new_y >= 100) {
                 console.error("Ant reached boundary");
             } else {
+                // Change the current cell
+                grid[ant.y][ant.x] = rule.color;
+
                 ant.x = new_x;
                 ant.y = new_y;
                 ant.rotation = next_rotation;
