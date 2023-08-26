@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
+    type RotationChange = -90 | 0 | 90;
     export interface Move<Color> {
-        rotate: 90 | -90;
+        rotate: RotationChange;
         color: Color;
     }
 
@@ -8,7 +9,7 @@
     type MoveOf<R> = Move<ColorOf<R>>;
     type ColorOf<R> = R extends RuleMap<infer Color> ? Color : never;
 
-    const rotations = ["U", "R", "D", "L"] as const;
+    export const rotations = ["U", "R", "D", "L"] as const;
     type Rotation = (typeof rotations)[number];
 
     interface Ant {
@@ -35,7 +36,7 @@
         return ant.x === x && ant.y === y;
     }
 
-    function apply_rotation(rotation: Rotation, change: 90 | -90): Rotation {
+    function apply_rotation(rotation: Rotation, change: RotationChange): Rotation {
         let di;
 
         if (change === 90) {
@@ -44,6 +45,9 @@
         } else if (change === -90) {
             // Turning right
             di = 1;
+        } else if (change === 0) {
+            // Straight
+            di = 0;
         } else {
             console.error("Unknown change", change);
             return rotation;
