@@ -48,18 +48,15 @@
         <h1>Langton's Ant</h1>
         <p>Tick count: <b>{tick_count}</b></p>
 
-        <div class="controller">
-            <ConfigEditor />
+        <ConfigEditor />
 
-            <TimeControl
-                bind:multiplier
-                bind:running
-                disable_controls={!valid_state}
-
-                on:tick={tick}
-                on:reset={reset}
-            />
-        </div>
+        <TimeControl
+            bind:multiplier
+            bind:running
+            disable_controls={!valid_state}
+            on:tick={tick}
+            on:reset={reset}
+        />
     </div>
 
     <div class="ant">
@@ -72,8 +69,10 @@
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+            sans-serif;
+
         --primary: #aaaaee;
     }
 
@@ -90,6 +89,10 @@
     .header {
         max-width: 750px;
         margin: 0 auto;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .ant {
@@ -97,5 +100,32 @@
         flex-shrink: 1;
         flex-basis: 0;
         overflow: hidden;
+    }
+
+    :global(button) {
+        background: #eeeeee;
+        color: var(--primary);
+        font-weight: bold;
+
+        border: none;
+        border-radius: 5px;
+        padding: 0.25rem 0.4rem;
+
+        cursor: pointer;
+    }
+
+    :global(button.primary) {
+        background: var(--primary);
+        color: black;
+    }
+
+    :global(button.icon) {
+        border-radius: 50%;
+
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

@@ -1,10 +1,14 @@
 <script lang="ts">
-    import config, {templates} from "$lib/stores/config";
+    import config, { templates } from "$lib/stores/config";
     import { rotation_changes } from "$lib/util/rotation";
+    import { X } from "lucide-svelte";
 
     function add_state() {
         $config.states.push(
-            "#" + Math.floor(Math.random() * (0xffffff + 1)).toString(16).padStart(6, "0")
+            "#" +
+                Math.floor(Math.random() * (0xffffff + 1))
+                    .toString(16)
+                    .padStart(6, "0")
         );
         $config.rules.push({
             rotate: 0,
@@ -54,19 +58,30 @@
 
     {#each $config.rules as move, state}
         <div class="rule">
-            <button on:click={() => remove_state(state)} disabled={$config.rules.length === 1}>X</button>
+            <button
+                on:click={() => remove_state(state)}
+                disabled={$config.rules.length === 1}
+                class="icon"
+            >
+                <X size={16} />
+            </button>
 
-            <p>Current state:</p>
-            <input type="color" bind:value={$config.states[state]} />
+            <label>
+                Current state:
+
+                <input type="color" bind:value={$config.states[state]} />
+
+                <div class="color_preview" style:--color={$config.states[state]} />
+            </label>
 
             <p>Next state:</p>
             {#each $config.states as color, i}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
                 <div
-                    class="cell"
+                    class="color_preview"
                     class:selected={move.color === i}
-                    style:--background={color}
+                    style:--color={color}
                     on:click={() => (move.color = i)}
                 />
             {/each}
@@ -84,25 +99,60 @@
 </div>
 
 <style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
     .rule {
         display: flex;
         align-items: center;
         gap: 1rem;
+
+        font-size: 0.8rem;
     }
 
-    .cell {
-        --size: 12px;
+    button.icon {
+        height: 20px;
+        width: 20px;
+
+        background: #eeeeee;
+        color: var(--primary);
+    }
+
+    label {
+        font-size: 0.8rem;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    input[type="color"] {
+        border: none;
+        opacity: 0;
+        width: 0;
+    }
+
+    .color_preview {
+        display: inline-block;
+
+        background: var(--color);
+        border: 1px solid black;
+        border-radius: 50%;
+
+        --size: 1lh;
         height: var(--size);
         width: var(--size);
 
-        display: inline-block;
-        position: relative;
-
-        border: 1px solid black;
-        background: var(--background);
     }
 
-    .cell.selected {
-        border: 2px solid red;
+    .color_preview.selected {
+        outline: 2px solid var(--primary);
+    }
+    *:has(.color_preview.selected) > .color_preview:not(.selected) {
+        opacity: 0.25;
     }
 </style>

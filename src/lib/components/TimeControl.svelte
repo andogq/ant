@@ -34,7 +34,11 @@
         />
     </label>
 
-    <button on:click={toggle_running} disabled={disable_controls}>
+    <button
+        on:click={toggle_running}
+        disabled={disable_controls}
+        class="icon primary"
+    >
         {#if running}
             <Pause />
         {:else}
@@ -42,11 +46,15 @@
         {/if}
     </button>
 
-    <button on:click={tick} disabled={disable_controls || running}>
+    <button
+        on:click={tick}
+        disabled={disable_controls || running}
+        class="icon primary"
+    >
         <Footprints />
     </button>
 
-    <button on:click={reset}>
+    <button on:click={reset} class="icon primary">
         <RotateCcw />
     </button>
 </div>
@@ -94,17 +102,7 @@
     }
 
     button {
-        background: var(--primary);
-        border: none;
-        border-radius: 50%;
-
-        cursor: pointer;
-
         height: 40px;
         width: 40px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 </style>
