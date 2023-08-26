@@ -8,7 +8,9 @@
 
     let ant_controller: Ant;
 
+    let multiplier = 1;
     let tick_count = 0;
+    let valid_state = true;
     let running = false;
 
     function toggle_running() {
@@ -20,13 +22,31 @@
     }
 
     function tick() {
-        tick_count += 1;
-        ant_controller.tick();
+        for (let i = 0; i < multiplier; i++) {
+            if (!valid_state) break;
+
+            tick_count += 1;
+            valid_state = ant_controller.tick();
+        }
+    }
+
+    function reset() {
+        tick_count = 0;
+        multiplier = 1;
+        valid_state = true;
+        running = false;
+
+        ant_controller.reset();
     }
 
     function animation_callback() {
         tick();
-        if (running) requestAnimationFrame(animation_callback);
+
+        if (!valid_state) {
+            running = false;
+        } else if (running) {
+            requestAnimationFrame(animation_callback);
+        }
     }
 </script>
 
@@ -35,6 +55,11 @@
 <p>Tick count: <b>{tick_count}</b></p>
 
 <div class="controller">
+    <label>
+        Multiplier
+        <input type="number" bind:value={multiplier} min={1} step={1} />
+    </label>
+
     <button on:click={toggle_running}>
         {#if running}
             Pause
@@ -43,11 +68,12 @@
         {/if}
     </button>
 
-    <button on:click={tick} disabled={running}>Tick</button>
+    <button on:click={tick} disabled={!valid_state && running}>Tick</button>
+
+    <button on:click={reset}>Reset</button>
 </div>
 
 <Ant bind:this={ant_controller} {rules} />
 
 <style>
-
 </style>

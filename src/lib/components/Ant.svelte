@@ -23,9 +23,7 @@
     export let rules: RuleMap<boolean>;
 
     let grid: ColorOf<typeof rules>[][];
-    $: grid = new Array(size)
-        .fill(undefined)
-        .map(() => new Array(size).fill(false));
+    $: generate_grid(size);
 
     // Ant controls
     let ant: Ant = {
@@ -58,7 +56,22 @@
         return rotations[index];
     }
 
-    export function tick() {
+    function generate_grid(size: number) {
+        grid = new Array(size)
+            .fill(undefined)
+            .map(() => new Array(size).fill(false));
+    }
+
+    export function reset() {
+        generate_grid(size);
+        ant = {
+            x: Math.floor(size / 2),
+            y: Math.floor(size / 2),
+            rotation: "L",
+        };
+    }
+
+    export function tick(): boolean {
         let current_color = grid[ant.y][ant.x];
         let rule = rules.get(current_color) || null;
 
@@ -72,7 +85,7 @@
 
             if (next_rotation === "U") {
                 dy -= 1;
-            } else if (next_rotation=== "D") {
+            } else if (next_rotation === "D") {
                 dy += 1;
             } else if (next_rotation === "L") {
                 dx -= 1;
@@ -86,6 +99,7 @@
             // Bounds checks
             if (new_x < 0 || new_y < 0 || new_x >= 100 || new_y >= 100) {
                 console.error("Ant reached boundary");
+                return false;
             } else {
                 // Change the current cell
                 grid[ant.y][ant.x] = rule.color;
@@ -93,9 +107,12 @@
                 ant.x = new_x;
                 ant.y = new_y;
                 ant.rotation = next_rotation;
+
+                return true;
             }
         } else {
             console.error("No matching rule found for", current_color);
+            return false;
         }
     }
 
