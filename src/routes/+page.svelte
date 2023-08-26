@@ -1,11 +1,6 @@
 <script lang="ts">
-    import Ant, { type RuleMap } from "$lib/components/Ant.svelte";
-    import RuleController from "$lib/components/RuleController.svelte";
-
-    let rules: RuleMap<boolean> = new Map([
-        [true, { rotate: 90, color: false }],
-        [false, { rotate: -90, color: true }],
-    ]);
+    import Ant from "$lib/components/Ant.svelte";
+    import ConfigEditor from "$lib/components/ConfigEditor.svelte";
 
     let ant_controller: Ant;
 
@@ -56,7 +51,7 @@
 <p>Tick count: <b>{tick_count}</b></p>
 
 <div class="controller">
-    <RuleController bind:rules />
+    <ConfigEditor />
 
     <label>
         Multiplier
@@ -76,7 +71,7 @@
     <button on:click={reset}>Reset</button>
 </div>
 
-<Ant bind:this={ant_controller} {rules} />
+<Ant bind:this={ant_controller} />
 
 <style>
 </style>

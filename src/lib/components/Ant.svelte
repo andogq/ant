@@ -1,29 +1,18 @@
-<script lang="ts" context="module">
-    type RotationChange = -90 | 0 | 90;
-    export interface Move<Color> {
-        rotate: RotationChange;
-        color: Color;
-    }
-
-    export type RuleMap<Color> = Map<Color, Move<Color>>;
-    type MoveOf<R> = Move<ColorOf<R>>;
-    type ColorOf<R> = R extends RuleMap<infer Color> ? Color : never;
-
-    export const rotations = ["U", "R", "D", "L"] as const;
-    type Rotation = (typeof rotations)[number];
+<script lang="ts">
+    import config from "$lib/stores/config";
+    import type { Rotation } from "$lib/util/rotation";
+    import { apply_rotation } from "$lib/util/rotation";
 
     interface Ant {
         x: number;
         y: number;
         rotation: Rotation;
     }
-</script>
 
-<script lang="ts">
     export let size = 100;
-    export let rules: RuleMap<boolean>;
 
-    let grid: ColorOf<typeof rules>[][];
+
+    let grid: number[][];
     $: generate_grid(size);
 
     // Ant controls
@@ -32,38 +21,24 @@
         y: Math.floor(size / 2),
         rotation: "L",
     };
+
+    let known_states = 0;
+    config.subscribe((config) => {
+        // Trigger a reset if change is detected in the states or rules
+        if (known_states !== config.states.length) {
+            known_states = config.states.length;
+            reset();
+        }
+    });
+
     function coord_matches(ant: Ant, x: number, y: number): boolean {
         return ant.x === x && ant.y === y;
-    }
-
-    function apply_rotation(rotation: Rotation, change: RotationChange): Rotation {
-        let di;
-
-        if (change === 90) {
-            // Turning left
-            di = -1;
-        } else if (change === -90) {
-            // Turning right
-            di = 1;
-        } else if (change === 0) {
-            // Straight
-            di = 0;
-        } else {
-            console.error("Unknown change", change);
-            return rotation;
-        }
-
-        // Rotate rotations with wrapping
-        let current_index = rotations.indexOf(rotation);
-        let index = (rotations.length + current_index + di) % rotations.length;
-
-        return rotations[index];
     }
 
     function generate_grid(size: number) {
         grid = new Array(size)
             .fill(undefined)
-            .map(() => new Array(size).fill(false));
+            .map(() => new Array(size).fill(0));
     }
 
     export function reset() {
@@ -77,7 +52,7 @@
 
     export function tick(): boolean {
         let current_color = grid[ant.y][ant.x];
-        let rule = rules.get(current_color) || null;
+        let rule = $config.rules[current_color] || null;
 
         if (rule) {
             // Rotate the ant
@@ -121,9 +96,10 @@
     }
 
     /* Grid drag functions */
-    let dragging: boolean | null = null;
+    let dragging: number | null = null;
     function start_drag(x: number, y: number) {
-        dragging = !grid[y][x];
+        // TODO: Temporary
+        dragging = 0;
         grid[y][x] = dragging;
     }
 
@@ -147,7 +123,7 @@
             <div
                 class="cell"
                 class:ant={coord_matches(ant, x, y)}
-                class:filled={cell}
+                style:--background={$config.states[cell]}
                 on:mousedown={() => start_drag(x, y)}
                 on:mouseup={() => end_drag()}
                 on:mouseover={() => drag_toggle(x, y)}
@@ -171,8 +147,9 @@
         width: var(--size);
 
         display: inline-block;
-
         position: relative;
+
+        background: var(--background);
     }
 
     .cell:hover {
@@ -189,10 +166,6 @@
         bottom: 0;
 
         background: #00000055;
-    }
-
-    .cell.filled {
-        background: black;
     }
 
     .cell.ant::after {
