@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import { Footprints, Pause, Play, RotateCcw } from "lucide-svelte";
+    import { Dices, Footprints, Pause, Play, RotateCcw } from "lucide-svelte";
 
     export let multiplier = 1;
     export let running = false;
@@ -18,6 +18,10 @@
 
     function toggle_running() {
         running = !running;
+    }
+
+    function randomise_grid() {
+        dispatch("randomise_grid");
     }
 </script>
 
@@ -75,6 +79,14 @@
 
         <button on:click={reset} class="icon primary" title="Restart">
             <RotateCcw />
+        </button>
+    </div>
+
+    <div class="labelled_button">
+        <p>Randomise Grid</p>
+
+        <button on:click={randomise_grid} class="icon primary" title="Randomise Grid">
+            <Dices />
         </button>
     </div>
 </div>

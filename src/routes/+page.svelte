@@ -72,6 +72,7 @@
             disable_controls={!valid_state}
             on:tick={tick}
             on:reset={reset}
+            on:randomise_grid={ant_controller.random_grid}
         />
 
         <PaintControl bind:value={cursor_color} />

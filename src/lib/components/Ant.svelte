@@ -24,9 +24,9 @@
     let ant: Ant;
     let grid: number[][];
     $: {
-        generate_grid(grid_height, grid_width)
+        generate_grid(grid_height, grid_width);
         reset();
-    };
+    }
 
     export function reset() {
         generate_grid(grid_height, grid_width);
@@ -35,6 +35,10 @@
             y: Math.floor(grid_height / 2),
             rotation: "L",
         };
+    }
+
+    export function random_grid() {
+        generate_grid(grid_height, grid_width, true);
     }
 
     let known_states = 0;
@@ -50,10 +54,16 @@
         return ant.x === x && ant.y === y;
     }
 
-    function generate_grid(height: number, width: number) {
-        grid = new Array(height)
-            .fill(undefined)
-            .map(() => new Array(width).fill(0));
+    function generate_grid(height: number, width: number, random = false) {
+        grid = new Array(height).fill(undefined).map(() =>
+            new Array(width).fill(0).map(() => {
+                if (random) {
+                    return Math.floor(Math.random() * $config.states.length);
+                } else {
+                    return 0;
+                }
+            })
+        );
     }
 
     export function tick(): boolean {
@@ -82,7 +92,12 @@
             let new_y = ant.y + dy;
 
             // Bounds checks
-            if (new_x < 0 || new_y < 0 || new_x >= grid_width || new_y >= grid_height) {
+            if (
+                new_x < 0 ||
+                new_y < 0 ||
+                new_x >= grid_width ||
+                new_y >= grid_height
+            ) {
                 console.error("Ant reached boundary");
                 return false;
             } else {
@@ -124,8 +139,8 @@
     bind:clientHeight={container_height}
     bind:clientWidth={container_width}
     style:--cell_size={cell_size + "px"}
-    style:padding-left={(container_width - (cell_size * grid_width)) / 2 + "px"}
-    style:padding-top={(container_height - (cell_size * grid_height)) / 2 + "px"}
+    style:padding-left={(container_width - cell_size * grid_width) / 2 + "px"}
+    style:padding-top={(container_height - cell_size * grid_height) / 2 + "px"}
 >
     {#each grid as row, y}
         <div class="row">
