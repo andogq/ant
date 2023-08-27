@@ -1,6 +1,6 @@
 <script lang="ts">
     import config, { templates } from "$lib/stores/config";
-    import { rotation_changes, } from "$lib/util/rotation";
+    import { rotation_changes } from "$lib/util/rotation";
     import { X } from "lucide-svelte";
     import StateList from "./StateList.svelte";
 
@@ -12,7 +12,9 @@
                     .padStart(6, "0")
         );
         $config.rules.push({
-            rotate: rotation_changes[Math.floor(Math.random() * rotation_changes.length)],
+            rotate: rotation_changes[
+                Math.floor(Math.random() * rotation_changes.length)
+            ],
             color: Math.floor(Math.random() * $config.states.length),
         });
 
@@ -72,7 +74,10 @@
 
                 <input type="color" bind:value={$config.states[state]} />
 
-                <div class="color_preview" style:--color={$config.states[state]} />
+                <div
+                    class="color_preview"
+                    style:--color={$config.states[state]}
+                />
             </label>
 
             <p>Next state:</p>
@@ -88,7 +93,7 @@
         </div>
     {/each}
 
-    <button on:click={add_state}>+ State</button>
+    <button on:click={add_state} title="Create new state">+ State</button>
 </div>
 
 <style>

@@ -46,6 +46,7 @@
         <button
             on:click={toggle_running}
             disabled={disable_controls}
+            title={running ? "Pause" : "Play"}
             class="icon primary"
         >
             {#if running}
@@ -56,7 +57,6 @@
         </button>
     </div>
 
-
     <div class="labelled_button">
         <p>Step</p>
 
@@ -64,6 +64,7 @@
             on:click={tick}
             disabled={disable_controls || running}
             class="icon primary"
+            title="Tick"
         >
             <Footprints />
         </button>
@@ -72,7 +73,7 @@
     <div class="labelled_button">
         <p>Restart</p>
 
-        <button on:click={reset} class="icon primary">
+        <button on:click={reset} class="icon primary" title="Restart">
             <RotateCcw />
         </button>
     </div>

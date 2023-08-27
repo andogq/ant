@@ -18,6 +18,12 @@
 </div>
 
 <style>
+    .container {
+        display: flex;
+        --size: 16px;
+        height: var(--size);
+    }
+
     .container > *:not(:last-child) {
         margin-right: 0.5rem;
     }
@@ -29,7 +35,6 @@
         border: 1px solid black;
         border-radius: 50%;
 
-        --size: 1lh;
         height: var(--size);
         width: var(--size);
 
