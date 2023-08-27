@@ -1,6 +1,7 @@
 <script lang="ts">
     import Ant from "$lib/components/Ant.svelte";
     import ConfigEditor from "$lib/components/ConfigEditor.svelte";
+    import PaintControl from "$lib/components/PaintControl.svelte";
     import TimeControl from "$lib/components/TimeControl.svelte";
 
     let ant_controller: Ant;
@@ -10,13 +11,17 @@
     let valid_state = true;
     let running = false;
 
+    let cursor_color = 0;
+
     $: if (running) {
         animation_callback();
     }
 
     function tick() {
         for (let i = 0; i < multiplier; i++) {
-            if (!valid_state) break;
+            if (!valid_state) {
+                break;
+            }
 
             tick_count += 1;
             valid_state = ant_controller.tick();
@@ -46,6 +51,12 @@
 <div class="container">
     <div class="header">
         <h1>Langton's Ant</h1>
+
+        <p class="blurb">
+            Created by <a href="https://ando.gq/">Tom Anderson</a> for Computing
+            Theory (S2 2023). <a href="https://github.com/andogq/ant">Source</a>.
+        </p>
+
         <p>Tick count: <b>{tick_count}</b></p>
 
         <ConfigEditor />
@@ -57,10 +68,12 @@
             on:tick={tick}
             on:reset={reset}
         />
+
+        <PaintControl bind:value={cursor_color} />
     </div>
 
     <div class="ant">
-        <Ant bind:this={ant_controller} />
+        <Ant bind:this={ant_controller} {cursor_color} />
     </div>
 </div>
 
@@ -86,13 +99,21 @@
         flex-direction: column;
     }
 
+    .blurb {
+        font-size: 0.8rem;
+    }
+
     .header {
+        width: 100%;
         max-width: 750px;
         margin: 0 auto;
+        padding: 1rem;
 
         display: flex;
         flex-direction: column;
         gap: 1rem;
+
+        overflow: hidden;
     }
 
     .ant {

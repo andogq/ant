@@ -9,6 +9,8 @@
         rotation: Rotation;
     }
 
+    export let cursor_color: number;
+
     let cell_size = 16;
 
     let container_height: number = 1;
@@ -80,7 +82,7 @@
             let new_y = ant.y + dy;
 
             // Bounds checks
-            if (new_x < 0 || new_y < 0 || new_x >= 100 || new_y >= 100) {
+            if (new_x < 0 || new_y < 0 || new_x >= grid_width || new_y >= grid_height) {
                 console.error("Ant reached boundary");
                 return false;
             } else {
@@ -100,20 +102,19 @@
     }
 
     /* Grid drag functions */
-    let dragging: number | null = null;
+    let dragging = false;
     function start_drag(x: number, y: number) {
-        // TODO: Temporary
-        dragging = 0;
-        grid[y][x] = dragging;
+        dragging = true;
+        grid[y][x] = cursor_color;
     }
 
     function end_drag() {
-        dragging = null;
+        dragging = false;
     }
 
     function drag_toggle(x: number, y: number) {
-        if (dragging !== null) {
-            grid[y][x] = dragging;
+        if (dragging) {
+            grid[y][x] = cursor_color;
         }
     }
 </script>

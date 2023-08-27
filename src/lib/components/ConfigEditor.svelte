@@ -1,7 +1,8 @@
 <script lang="ts">
     import config, { templates } from "$lib/stores/config";
-    import { rotation_changes } from "$lib/util/rotation";
+    import { rotation_changes, } from "$lib/util/rotation";
     import { X } from "lucide-svelte";
+    import StateList from "./StateList.svelte";
 
     function add_state() {
         $config.states.push(
@@ -11,8 +12,8 @@
                     .padStart(6, "0")
         );
         $config.rules.push({
-            rotate: 0,
-            color: 0,
+            rotate: rotation_changes[Math.floor(Math.random() * rotation_changes.length)],
+            color: Math.floor(Math.random() * $config.states.length),
         });
 
         $config = $config;
@@ -75,16 +76,8 @@
             </label>
 
             <p>Next state:</p>
-            {#each $config.states as color, i}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <div
-                    class="color_preview"
-                    class:selected={move.color === i}
-                    style:--color={color}
-                    on:click={() => (move.color = i)}
-                />
-            {/each}
+
+            <StateList bind:value={move.color} />
 
             <p>Rotation:</p>
             <select bind:value={move.rotate}>
@@ -103,6 +96,8 @@
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        max-height: 250px;
+        overflow: scroll;
     }
 
     .rule {
@@ -147,12 +142,6 @@
         height: var(--size);
         width: var(--size);
 
-    }
-
-    .color_preview.selected {
-        outline: 2px solid var(--primary);
-    }
-    *:has(.color_preview.selected) > .color_preview:not(.selected) {
-        opacity: 0.25;
+        flex-shrink: 0;
     }
 </style>

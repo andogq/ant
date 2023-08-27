@@ -23,7 +23,7 @@
 
 <div class="container">
     <label class="multiplier">
-        <span>Multiplier</span>
+        <span>Speed Multiplier</span>
 
         <input
             type="number"
@@ -34,29 +34,48 @@
         />
     </label>
 
-    <button
-        on:click={toggle_running}
-        disabled={disable_controls}
-        class="icon primary"
-    >
-        {#if running}
-            <Pause />
-        {:else}
-            <Play />
-        {/if}
-    </button>
+    <div class="labelled_button">
+        <p>
+            {#if running}
+                Pause
+            {:else}
+                Play
+            {/if}
+        </p>
 
-    <button
-        on:click={tick}
-        disabled={disable_controls || running}
-        class="icon primary"
-    >
-        <Footprints />
-    </button>
+        <button
+            on:click={toggle_running}
+            disabled={disable_controls}
+            class="icon primary"
+        >
+            {#if running}
+                <Pause />
+            {:else}
+                <Play />
+            {/if}
+        </button>
+    </div>
 
-    <button on:click={reset} class="icon primary">
-        <RotateCcw />
-    </button>
+
+    <div class="labelled_button">
+        <p>Step</p>
+
+        <button
+            on:click={tick}
+            disabled={disable_controls || running}
+            class="icon primary"
+        >
+            <Footprints />
+        </button>
+    </div>
+
+    <div class="labelled_button">
+        <p>Restart</p>
+
+        <button on:click={reset} class="icon primary">
+            <RotateCcw />
+        </button>
+    </div>
 </div>
 
 <style>
@@ -104,5 +123,22 @@
     button {
         height: 40px;
         width: 40px;
+    }
+
+    .labelled_button {
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 0.25rem;
+    }
+
+    .labelled_button > p {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #aaaaaa;
+        cursor: default;
+        user-select: none;
     }
 </style>

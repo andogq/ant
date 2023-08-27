@@ -1,4 +1,4 @@
-export const rotation_changes = [-90, 0, 90] as const;
+export const rotation_changes = [-90, 0, 90, 180] as const;
 export type RotationChange = (typeof rotation_changes)[number];
 
 export const rotations = ["U", "R", "D", "L"] as const;
@@ -13,6 +13,9 @@ export function apply_rotation(rotation: Rotation, change: RotationChange): Rota
     } else if (change === -90) {
         // Turning right
         di = 1;
+    } else if (change === 180) {
+        // Turn around
+        di = 2;
     } else if (change === 0) {
         // Straight
         di = 0;
