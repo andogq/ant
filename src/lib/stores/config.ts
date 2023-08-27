@@ -15,6 +15,13 @@ export const templates: {[key: string]: () => Config } = {
     classic: () => ({
         states: ["#ffffff", "#000000"],
         rules: [
+            { rotate: -90, color: 1 },
+            { rotate: 90, color: 0 },
+        ]
+    }),
+    gajardo: () => ({
+        states: ["#ffffff", "#000000"],
+        rules: [
             { rotate: 90, color: 1 },
             { rotate: -90, color: 0 },
         ]
