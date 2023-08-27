@@ -10,16 +10,18 @@
     let tick_count = 0;
     let valid_state = true;
     let running = false;
+    let log: string | null = null;
 
     let cursor_color = 0;
 
     $: if (running) {
+        log = null;
         animation_callback();
     }
 
     function tick() {
         for (let i = 0; i < multiplier; i++) {
-            if (!valid_state) {
+            if (!valid_state || !running) {
                 break;
             }
 
@@ -33,6 +35,7 @@
         multiplier = 1;
         valid_state = true;
         running = false;
+        log = null;
 
         ant_controller.reset();
     }
@@ -41,6 +44,7 @@
         tick();
 
         if (!valid_state) {
+            log = "Ant reached end of world.";
             running = false;
         } else if (running) {
             requestAnimationFrame(animation_callback);
@@ -54,7 +58,8 @@
 
         <p class="blurb">
             Created by <a href="https://ando.gq/">Tom Anderson</a> for Computing
-            Theory (S2 2023). <a href="https://github.com/andogq/ant">Source</a>.
+            Theory (S2 2023).
+            <a href="https://github.com/andogq/ant">Source</a>.
         </p>
 
         <p>Tick count: <b>{tick_count}</b></p>
@@ -74,6 +79,10 @@
 
     <div class="ant">
         <Ant bind:this={ant_controller} {cursor_color} />
+
+        {#if log}
+            <p class="log">{log}</p>
+        {/if}
     </div>
 </div>
 
@@ -121,6 +130,8 @@
         flex-shrink: 1;
         flex-basis: 0;
         overflow: hidden;
+
+        position: relative;
     }
 
     :global(button) {
@@ -148,5 +159,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .log {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        max-width: 100%;
+
+        border-radius: 2px;
+        border: 2px solid #ff8888;
+        background: #ffffffcc;
+
+        pointer-events: none;
+
+        padding: 0.25rem;
+
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
     }
 </style>
