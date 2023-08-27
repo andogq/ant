@@ -19,9 +19,9 @@
         animation_callback();
     }
 
-    function tick() {
+    function tick(step = false) {
         for (let i = 0; i < multiplier; i++) {
-            if (!valid_state || !running) {
+            if (!valid_state || (!step && !running)) {
                 break;
             }
 
@@ -70,7 +70,7 @@
             bind:multiplier
             bind:running
             disable_controls={!valid_state}
-            on:tick={tick}
+            on:tick={() => tick(true)}
             on:reset={reset}
             on:randomise_grid={ant_controller.random_grid}
         />
