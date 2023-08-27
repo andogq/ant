@@ -44,7 +44,7 @@
         tick();
 
         if (!valid_state) {
-            log = "Ant reached end of world.";
+            log = "Invalid ant configuration. Try restarting.";
             running = false;
         } else if (running) {
             requestAnimationFrame(animation_callback);

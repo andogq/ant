@@ -91,25 +91,14 @@
             let new_x = ant.x + dx;
             let new_y = ant.y + dy;
 
-            // Bounds checks
-            if (
-                new_x < 0 ||
-                new_y < 0 ||
-                new_x >= grid_width ||
-                new_y >= grid_height
-            ) {
-                console.error("Ant reached boundary");
-                return false;
-            } else {
-                // Change the current cell
-                grid[ant.y][ant.x] = rule.color;
+            // Change the current cell
+            grid[ant.y][ant.x] = rule.color;
 
-                ant.x = new_x;
-                ant.y = new_y;
-                ant.rotation = next_rotation;
+            ant.x = (grid_width + new_x) % grid_width;
+            ant.y = (grid_height + new_y) % grid_height;
+            ant.rotation = next_rotation;
 
-                return true;
-            }
+            return true;
         } else {
             console.error("No matching rule found for", current_color);
             return false;
