@@ -31,6 +31,8 @@
     }
 
     function reset() {
+        let load_grid = running;
+
         tick_count = 0;
         multiplier = 1;
         valid_state = true;
@@ -38,6 +40,7 @@
         log = null;
 
         ant_controller.reset();
+        if (load_grid) ant_controller.load_grid();
     }
 
     function animation_callback() {

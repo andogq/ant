@@ -23,6 +23,7 @@
     // Ant controls
     let ant: Ant;
     let grid: number[][];
+    export let saved_grid: Map<[number, number], number> | null = null;
     $: {
         generate_grid(grid_height, grid_width);
         reset();
@@ -52,6 +53,26 @@
 
     function coord_matches(ant: Ant, x: number, y: number): boolean {
         return ant.x === x && ant.y === y;
+    }
+
+    export function load_grid() {
+        if (saved_grid) {
+            generate_grid(grid_height, grid_width);
+
+            for (let [[x, y], state] of saved_grid) {
+                grid[y][x] = state;
+            }
+        }
+    }
+
+    export function save_grid() {
+        saved_grid = new Map(
+            grid.flatMap((row, y) =>
+                row
+                    .map<[[number, number], number]>((cell, x) => [[x, y], cell])
+                    .filter(([_, cell]) => cell !== 0)
+            )
+        );
     }
 
     function generate_grid(height: number, width: number, random = false) {
@@ -110,6 +131,7 @@
     function start_drag(x: number, y: number) {
         dragging = true;
         grid[y][x] = cursor_color;
+        save_grid();
     }
 
     function end_drag() {
@@ -119,6 +141,7 @@
     function drag_toggle(x: number, y: number) {
         if (dragging) {
             grid[y][x] = cursor_color;
+            save_grid();
         }
     }
 </script>
